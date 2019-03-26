@@ -5,8 +5,8 @@ class Square:
         self.piece = piece
         self.color = color
         self.block = {
-            "black": '██',
-            "white": '  '
+            "white": '██',
+            "black": '  '
         }
     
     def __str__(self):
@@ -15,5 +15,5 @@ class Square:
         
         return self.block[self.color]
         
-
+    __repr__ = __str__
         
