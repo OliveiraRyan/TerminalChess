@@ -11,9 +11,8 @@ class Square:
     
     def __str__(self):
         if (self.piece):
-            return self.piece
+            return self.piece.__str__()
         
         return self.block[self.color]
         
-    __repr__ = __str__
-        
+    __repr__ = __str__     

@@ -2,6 +2,7 @@ import os
 import sys
 import platform
 import math
+import pieces
 
 from square import Square
 
@@ -10,12 +11,31 @@ from square import Square
 
 
 if platform.system() == "Windows":
-    sys.stdout = open(sys.stdout.fileno(), mode='w',
-                      encoding='utf8', buffering=1)
+    sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
 
 
 # init the board (inital chess board game state)
 grid = []
+
+# init the remaining pieces on the board
+piecesRemaining = {
+    "WhitePawn": 8,
+    "WhiteRook": 2,
+    "WhiteKnight": 2,
+    "WhiteBishop": 2,
+    "WhiteQueen": 1,
+    "WhiteKing": 1,
+
+    "BlackPawn": 8,
+    "BlackRook": 2,
+    "BlackKnight": 2,
+    "BlackBishop": 2,
+    "BlackQueen": 1,
+    "BlackKing": 1
+}
+
+# Current player's turn
+playerTurn = 'W'
 
 
 def makeGrid():
@@ -24,21 +44,50 @@ def makeGrid():
         "white": "black",
         "black": "white"
     }
+    # If playerColor = White, tileColor = black, and vice versa
     tileColor = "black"
-    for col in range(0, 8):
-        colTiles = []
-        for row in range(0, 8):
-            colTiles.append(Square(None, tileColor))
+    for row in range(0, 8):
+        rowTiles = []
+        for col in range(0, 8):
+            rowTiles.append(Square(None, tileColor))
             tileColor = colorSwitcher[tileColor]
-        grid.append(colTiles)
+
+        grid.append(rowTiles)
         tileColor = colorSwitcher[tileColor]
 
 
+
+
+    # init pawns
+    for col in range(0, 8):
+        grid[1][col].piece = pieces.Pawn("W", 1, col)
+        grid[6][col].piece = pieces.Pawn("B", 6, col)
+
+    # init rest of pieces
+    grid[0][0].piece = pieces.Rook("W", 0, 0)
+    grid[0][1].piece = pieces.Knight("W", 0, 1)
+    grid[0][2].piece = pieces.Bishop("W", 0, 2)
+    grid[0][3].piece = pieces.Queen("W", 0, 3)
+    grid[0][4].piece = pieces.King("W", 0, 4)
+    grid[0][5].piece = pieces.Bishop("W", 0, 5)
+    grid[0][6].piece = pieces.Knight("W", 0, 6)
+    grid[0][7].piece = pieces.Rook("W", 0, 7)
+
+    grid[7][0].piece = pieces.Rook("B", 6, 0)
+    grid[7][1].piece = pieces.Knight("B", 6, 1)
+    grid[7][2].piece = pieces.Bishop("B", 6, 2)
+    grid[7][3].piece = pieces.Queen("B", 6, 3)
+    grid[7][4].piece = pieces.King("B", 6, 4)
+    grid[7][5].piece = pieces.Bishop("B", 6, 5)
+    grid[7][6].piece = pieces.Knight("B", 6, 6)
+    grid[7][7].piece = pieces.Rook("B", 6, 7)
+    
+
 def drawNowPlaying():
     print(
-        '  ----------------------\n'
-        '  |   NOW PLAYING: W   |\n'
-        '  ----------------------'
+'''  ----------------------
+  |   NOW PLAYING: {}   |
+  ----------------------'''.format(playerTurn)
     )
 
 
@@ -54,10 +103,12 @@ def drawBoard():
         print('__', end='')
     print()
 
-    for rowNum in range(1, 9):
-        print(' {}  |'.format(abs(rowNum-9)), end='')
-        for colTiles in range(8, 0, -1):
-            print(grid[rowNum-1][colTiles-1], end='')
+    #if playerColor = Black,  for rowNum in range(0, 8):
+    #    print(' {}  |'.format(abs(rowNum-1), end='')
+    for rowNum in range(7, -1, -1):
+        print(' {}  |'.format(rowNum+1), end='')
+        for colTiles in range(0, 8):
+            print(grid[rowNum][colTiles], end='')
         print('|')
 
     print('     ', end='')
@@ -67,17 +118,37 @@ def drawBoard():
 
 
 def drawRemainingPieces():
-    pass
+    # global piecesRemaining
+    print(
+''' REMAINING:
+ _______________________ 
+   White:   |   Black:
+  {WhitePawn}P'  {WhiteRook}R'  |  {BlackPawn}p.  {BlackRook}r.
+  {WhiteKnight}N'  {WhiteBishop}B'  |  {BlackKnight}n.  {BlackBishop}b.
+  {WhiteQueen}Q'  {WhiteKing}K'  |  {BlackQueen}q.  {BlackKing}k.'''.format(
+      WhitePawn=piecesRemaining["WhitePawn"],
+      WhiteRook=piecesRemaining["WhiteRook"],
+      WhiteKnight=piecesRemaining["WhiteKnight"],
+      WhiteBishop=piecesRemaining["WhiteBishop"],
+      WhiteQueen=piecesRemaining["WhiteQueen"],
+      WhiteKing=piecesRemaining["WhiteKing"],
+
+      BlackPawn=piecesRemaining["BlackPawn"],
+      BlackRook=piecesRemaining["BlackRook"],
+      BlackKnight=piecesRemaining["BlackKnight"],
+      BlackBishop=piecesRemaining["BlackBishop"],
+      BlackQueen=piecesRemaining["BlackQueen"],
+      BlackKing=piecesRemaining["BlackKing"]
+      ))
 
 
 def drawGame():
     os.system('clear')
-    makeGrid()
 
     drawNowPlaying()
     drawBoard()
-    #TODO: Finish this function (after pieces are finished)
     drawRemainingPieces()
 
 
+makeGrid()
 drawGame()

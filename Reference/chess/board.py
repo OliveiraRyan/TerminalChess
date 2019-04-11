@@ -39,7 +39,7 @@ def populate():
 
         else:
             place = 0
-            for k in range(8):
+            for kz in range(8):
                 grid[i][place].pieceStatus = False
                 grid[i][place].color = "black"
                 grid[i][place].row = i
